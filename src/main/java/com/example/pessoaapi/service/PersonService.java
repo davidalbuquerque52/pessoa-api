@@ -36,14 +36,23 @@ public class PersonService {
     }
 
     public PersonResponseDTO savePerson(PersonRequestDTO personRequest) {
+        String identifierReduced = replaceUnecessaryChars(personRequest.getIdentifier());
         Person person = Person.builder()
                 .name(personRequest.getName())
-                .identifier(personRequest.getIdentifier())
-                .identifierType(getIdentifierTypeByIdentifier(personRequest.getIdentifier()))
+                .identifier(identifierReduced)
+                .identifierType(getIdentifierTypeByIdentifier(identifierReduced))
                 .build();
         Person personSaved = personRepository.save(person);
         PersonResponseDTO personResponseDTO = initializePersonResponseByPerson(personSaved);
         return  personResponseDTO;
+    }
+
+    private String replaceUnecessaryChars(String identifier) {
+        return identifier
+                .replace(".", "")
+                .replace("-", "")
+                .replace("/", "")
+                .replace(" ", "");
     }
 
     private PersonResponseDTO initializePersonResponseByPerson(Person person) {
@@ -57,12 +66,6 @@ public class PersonService {
     }
 
     private IdentifierType getIdentifierTypeByIdentifier(String identifier) {
-        IdentifierType identifierType = identifier
-                .replace(".", "")
-                .replace("-", "")
-                .replace("/", "")
-                .replace(" ", "")
-                .length() < 14 ? IdentifierType.CPF : IdentifierType.CNPJ;
-        return identifierType;
+        return identifier.length() < 14 ? IdentifierType.CPF : IdentifierType.CNPJ;
     }
 }
