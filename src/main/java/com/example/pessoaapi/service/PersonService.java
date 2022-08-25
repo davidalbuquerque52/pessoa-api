@@ -58,10 +58,10 @@ public class PersonService {
 
     private IdentifierType getIdentifierTypeByIdentifier(String identifier) {
         IdentifierType identifierType = identifier
-                .replaceAll(".", "")
-                .replaceAll("-", "")
-                .replaceAll("/", "")
-                .replaceAll(" ", "")
+                .replace(".", "")
+                .replace("-", "")
+                .replace("/", "")
+                .replace(" ", "")
                 .length() < 14 ? IdentifierType.CPF : IdentifierType.CNPJ;
         return identifierType;
     }
